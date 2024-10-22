@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Episodes</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to the external CSS -->
+</head>
+<body>
+<h1 id="season-title">Episodes</h1>
+<div id="episode-list"></div>
+
+<script type="module">
+    import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
+
+    const supabase = createClient('https://ixnfbwjmqvnqhobyyxnv.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4bmZid2ptcXZucWhvYnl5eG52Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTM0ODYwNTksImV4cCI6MjAwOTA2MjA1OX0.goNJAmWlkw-ob3aGdlpXPitdDggc5cdH3QwzkJ6wUBM');
+
+    const username = sessionStorage.getItem('fwk_username')
+
+    // Function to fetch and display episodes based on the season
+    const displayEpisodes = async () => {
+        try {
+            // Get season from query params
+            const urlParams = new URLSearchParams(window.location.search);
+            const season = urlParams.get('season');
+
+            // Mapping season codes to display names
+            const seasonNames = {
+                'S01': 'Season 01',
+                'S02': 'Season 02',
+                'S03': 'Season 03',
+                'S04': 'Season 04',
+                'S05': 'Season 05',
+                'S06': 'Season 06',
+                'S07': 'Season 07',
+                'S08': 'Season 08',
+                'S09': 'Season 09',
+                'S10': 'Season 10'
+            };
+
+            // Set the heading to the appropriate season name
+            document.getElementById('season-title').textContent = seasonNames[season] || `Episodes of ${season}`;
+
+            // Fetch JSON data
+            const response = await fetch('friends_1994_links.json');
+            if (!response.ok) throw new Error('Network response was not ok');
+
+            const episodes = await response.json();
+            const episodeList = document.getElementById('episode-list');
+
+            // Display episodes for the specified season
+            const filteredEpisodes = episodes.filter(episode => episode.season === season);
+            if (filteredEpisodes.length === 0) {
+                episodeList.innerHTML = '<p>No episodes found for this season.</p>';
+                return;
+            }
+
+            filteredEpisodes.forEach(({episode: episodeField, title, link}) => {
+                const episodeDiv = document.createElement('div');
+                episodeDiv.className = 'episode';
+
+                // Create the episode link
+                const episodeLink = document.createElement('a');
+                episodeLink.href = link;
+                episodeLink.target = '_blank';
+                episodeLink.className = 'button ep-btn';
+                episodeLink.textContent = `${episodeField} - ${title}`;
+
+                // Add click event to log episode watch
+                episodeLink.addEventListener('click', async (event) => {
+                    const seasonNumber = parseInt(season.replace('S', ''));
+                    const episodeNumber = parseInt(episodeField.replace('E', ''));
+
+                    // Log the watch action
+                    const {error: logError} = await supabase
+                        .from('frnds_log')
+                        .insert([
+                            {
+                                username: username,
+                                action: 'watch episode',
+                                season: seasonNumber,
+                                episode: episodeNumber
+                            }
+                        ]);
+
+                    if (logError) {
+                        console.error('Error logging watch action:', logError);
+                        alert('An error occurred while logging your activity.');
+                    }
+                });
+
+                episodeDiv.appendChild(episodeLink);
+                episodeList.appendChild(episodeDiv);
+            });
+        } catch (error) {
+            console.error('Error fetching or parsing data:', error);
+            document.getElementById('episode-list').innerHTML = '<p>Error loading episodes. Please try again later.</p>';
+        }
+    };
+
+    // Call the function to display episodes
+    displayEpisodes();
+    if (!sessionStorage.getItem('fwk_username')) {
+        window.location.href = 'index.html'; // Redirect to login page if not logged in
+    }
+</script>
+</body>
+</html>

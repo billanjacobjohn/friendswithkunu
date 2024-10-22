@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+<div class="login-container">
+    <form id="login-form" class="login-form">
+        <h2>Login</h2>
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="button">Login</button>
+        </div>
+        <div id="error-msg" style="color: red; display: none;">Invalid credentials!</div>
+    </form>
+</div>
+
+<script type="module">
+
+    import {createClient} from 'https://esm.sh/@supabase/supabase-js@2'
+
+    const supabase = createClient('https://ixnfbwjmqvnqhobyyxnv.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4bmZid2ptcXZucWhvYnl5eG52Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTM0ODYwNTksImV4cCI6MjAwOTA2MjA1OX0.goNJAmWlkw-ob3aGdlpXPitdDggc5cdH3QwzkJ6wUBM')
+
+    // Disable forward navigation
+    history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+        history.pushState(null, null, window.location.href);
+    };
+
+    document.getElementById('login-form').addEventListener('submit', async function (event) {
+        event.preventDefault(); // Prevent form submission
+
+        if (!document.getElementById('username').value || !document.getElementById('password').value) {
+            alert("Please enter all credentials");
+        } else {
+            let {data: users, error} = await supabase
+                .from('frnds_users')
+                .select('*');
+
+            if (error) {
+                console.error("Error fetching users: ", error);
+                alert("An error occurred. Please try again.");
+                return;
+            }
+
+            var flag = 0;
+            for (var i in users) {
+                if ((users[i]['username'] === document.getElementById('username').value) && (users[i]['password'] === document.getElementById('password').value)) {
+                    flag = 1;
+
+                    // Log the login action
+                    const {error: logError} = await supabase
+                        .from('frnds_log')
+                        .insert([
+                            {username: users[i]['username'], action: 'logged in'}
+                        ]);
+
+                    if (logError) {
+                        console.error("Error logging the action: ", logError);
+                        alert("An error occurred while logging the action.");
+                        return;
+                    }
+
+                    // Redirect to seasons page
+                    sessionStorage.setItem('fwk_username', users[i]['username']);
+                    window.location.href = 'seasons.html';
+                }
+            }
+            if (flag === 0) {
+                alert("Wrong credentials");
+            }
+        }
+    });
+
+</script>
+
+</body>
+</html>

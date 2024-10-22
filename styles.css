@@ -1,0 +1,82 @@
+/* Set the wallpaper images based on screen size */
+body {
+    margin: 0;                    /* Remove default margin */
+    padding: 0;                   /* Remove default padding */
+    height: 100vh;                /* Set body height to full viewport height */
+    background-image: url('images/friends_pc_wallpaper.jpg');
+    background-size: cover;       /* Cover ensures it fills the viewport */
+    background-position: center;  /* Center the background image */
+    background-repeat: no-repeat;  /* Prevent the background from repeating */
+    background-attachment: fixed; /* Keep the background fixed */
+    filter: brightness(80%);      /* Adjust brightness for PC wallpaper */
+    color: white;                 /* Change text color for better visibility */
+    font-family: Arial, sans-serif; /* Use a nice font */
+}
+
+/* Mobile wallpaper */
+@media (max-width: 768px) {
+    body {
+        background-image: url('images/friends_android_wallpaper.jpg');
+        filter: brightness(80%); /* Adjust brightness for mobile wallpaper */
+    }
+}
+
+/* Style for season list container */
+#season-list, #episode-list {
+    display: flex;                  /* Use Flexbox */
+    flex-wrap: wrap;               /* Allow wrapping of buttons */
+    justify-content: space-around; /* Evenly distribute buttons */
+    align-items: center;           /* Center items vertically */
+    margin: 20px;                  /* Add some margin */
+    height: 100%;                  /* Allow the list to take full height */
+}
+
+/* Button styles */
+a.button {
+    padding: 0.5rem 1.2rem;
+    border: unset;
+    border-radius: 15px;
+    color: #212121;
+    z-index: 1;
+    background: #e8e8e8;
+    position: relative;
+    font-weight: 1000;
+    font-size: 17px;
+    box-shadow: 4px 8px 19px -3px rgba(0, 0, 0, 0.27);
+    transition: all 250ms;
+    overflow: hidden;
+    text-decoration: none;        /* Remove underline from links */
+    display: inline-block;        /* Ensure it's treated like a block */
+}
+
+.ep-btn{
+    width: 18rem;
+    margin-bottom: 1rem;
+}
+a.button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0;
+    border-radius: 15px;
+    background-color: #212121;
+    z-index: -1;
+    box-shadow: 4px 8px 19px -3px rgba(0, 0, 0, 0.27);
+    transition: all 250ms;
+}
+
+a.button:hover {
+    color: #e8e8e8;
+}
+
+a.button:hover::before {
+    width: 100%;
+}
+
+/* Title style */
+h1 {
+    text-align: center;           /* Center the title */
+    margin: 20px 0;              /* Margin around title */
+}

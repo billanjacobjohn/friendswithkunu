@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Series Index</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to the external CSS -->
+</head>
+<body>
+<div id="season-list">
+    <div class="season-card">
+        <a href="episodes.html?season=S01" class="button">Season 1</a>
+    </div>
+    <div class="season-card">
+        <a href="episodes.html?season=S02" class="button">Season 2</a>
+    </div>
+    <!-- Add more seasons as needed -->
+    <div class="season-card">
+        <a href="episodes.html?season=S03" class="button">Season 3</a>
+    </div>
+    <div class="season-card">
+        <a href="episodes.html?season=S04" class="button">Season 4</a>
+    </div>
+    <div class="season-card">
+        <a href="episodes.html?season=S05" class="button">Season 5</a>
+    </div>
+    <div class="season-card">
+        <a href="episodes.html?season=S06" class="button">Season 6</a>
+    </div>
+    <div class="season-card">
+        <a href="episodes.html?season=S07" class="button">Season 7</a>
+    </div>
+    <div class="season-card">
+        <a href="episodes.html?season=S08" class="button">Season 8</a>
+    </div>
+    <div class="season-card">
+        <a href="episodes.html?season=S09" class="button">Season 9</a>
+    </div>
+    <div class="season-card">
+        <a href="episodes.html?season=S10" class="button">Season 10</a>
+    </div>
+</div>
+
+<script>
+    // Check if the user is logged in
+    if (!sessionStorage.getItem('fwk_username')) {
+        window.location.href = 'index.html'; // Redirect to login page if not logged in
+    }
+</script>
+</body>
+</html>
